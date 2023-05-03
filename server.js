@@ -1,18 +1,17 @@
-import { ChainId, Token, TokenAmount, Pair, Trade, TradeType, Route } from '@uniswap/sdk'
 const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const exhbs = require('express-handlebars');
 const routes = require('./controllers');
-const helpers = require('.utils/helpers');
+const helpers = require('./utils/helpers');
 
-const sequelize = require ('.confif/connection');
+const sequelize = require ('./config/connection');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const hbs = exphbs.create({helpers});
+const hbs = exhbs.create({ helpers });
 
 const sess = {
     secret: 'Super secret secret',
@@ -32,6 +31,7 @@ const sess = {
 app.use(session(sess));
 
 // give Express.js the template to use
+//app.engine('hbs', exphbs({defaultLayout: 'main', extname: '.hbs'}));
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
@@ -41,7 +41,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(routes);
 
-sequelize.sync({force:false}).then(() => {
+sequelize.sync({ force: false }).then(() => {
     app.listen(PORT, () => console.log(`Now listening on port ${PORT}!`));
 });
 
